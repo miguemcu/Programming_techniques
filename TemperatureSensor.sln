@@ -1,25 +1,48 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35919.96 d17.13
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemperatureSensor", "TemperatureSensor\TemperatureSensor.csproj", "{22E6072C-3595-4BDD-8D5D-4B2C35EFE823}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{22E6072C-3595-4BDD-8D5D-4B2C35EFE823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22E6072C-3595-4BDD-8D5D-4B2C35EFE823}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22E6072C-3595-4BDD-8D5D-4B2C35EFE823}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22E6072C-3595-4BDD-8D5D-4B2C35EFE823}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {22893670-2278-4864-B267-DA77B05F6474}
-	EndGlobalSection
-EndGlobal
+namespace TemperatureSensor
+{
+    internal class Program
+    {
+
+        public delegate void TemperatureHandler(object sender, EventArgs e);
+
+        public static event TemperatureHandler HighTemperatureReached;
+
+        public static event TemperatureHandler LowTemperatureReached;
+
+        public static void Main(string[] args)
+        {
+            Random random = new Random();
+
+            AlertSystem alert = new AlertSystem();
+
+            HighTemperatureReached += alert.HighTemperatureAlert;
+
+            LowTemperatureReached += alert.LowTemperatureAlert;
+
+            int temperature = random.Next(20,100);
+
+            if (temperature < 30)
+            {
+                LowTemperatureReached?.Invoke(alert, EventArgs(temperature);
+            }
+
+
+        }
+    
+    }
+
+    internal class AlertSystem
+    { 
+        public static void HighTemperatureAlert(object sender, int temperature)
+        {
+            Console.WriteLine($"ALERTA: Temperatura alta detectada: {temperature}°C");
+        }
+
+        public static void LowTemperatureAlert(object sender, int temperature)
+        {
+            Console.WriteLine($"ADVERTENCIA: Temperatura baja detectada: {temperature}°C");
+        }
+    }
+   
+}
+
