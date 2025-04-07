@@ -1,0 +1,50 @@
+namespace Temperatures
+{
+    internal class Program
+    {
+        public delegate void TemperatureHandler(int temperature); // Delegado para manejar eventos de temperatura
+        internal class TemperatureSensor
+        {
+            public event TemperatureHandler HighTemperatureReached; // Evento para temperatura alta
+            public event TemperatureHandler LowTemperatureReached; // Evento para temperatura baja
+        
+            public void simulateTemperature()
+            {
+                Random random = new Random();
+                int temperature = random.Next(20, 101);
+
+                if (temperature > 75)
+                    HighTemperatureReached?.Invoke(temperature);
+
+                if (temperature < 30)
+                    LowTemperatureReached?.Invoke(temperature);
+
+
+                Console.WriteLine($"\nTemperatura simulada exitosamente: {temperature}°C.");
+            }
+        }
+
+        internal class AlertSystem
+        {
+            public static void HighTemperatureAlert(int temperature)
+            {
+                Console.WriteLine($"ALERTA: Temperatura alta detectada: {temperature}°C");
+            }
+
+            public static void LowTemperatureAlert(int temperature)
+            {
+                Console.WriteLine($"ADVERTENCIA: Temperatura baja detectada: {temperature}°C");
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            TemperatureSensor sensor = new TemperatureSensor();
+            sensor.LowTemperatureReached += AlertSystem.LowTemperatureAlert; // Suscribirse al evento de temperatura baja
+            sensor.HighTemperatureReached += AlertSystem.HighTemperatureAlert; // Suscribirse al evento de temperatura alta
+
+            sensor.simulateTemperature();
+
+        }
+    }
+}
