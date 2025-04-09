@@ -1,0 +1,61 @@
+using System.Timers;
+namespace Temperatures
+{
+    internal class Program
+    {
+        public delegate void TemperatureHandler(int temperature); // Delegado para manejar eventos de temperatura
+        internal class TemperatureSensor
+        {
+            public event TemperatureHandler HighTemperatureReached; // Evento para temperatura alta
+            public event TemperatureHandler LowTemperatureReached; // Evento para temperatura baja
+
+            public void simulateTemperature()
+            {
+                Random random = new Random();
+                int temperature = random.Next(20, 101);
+
+                if (temperature > 75)
+                    HighTemperatureReached?.Invoke(temperature);
+
+                if (temperature < 30)
+                    LowTemperatureReached?.Invoke(temperature);
+
+            }
+        }
+
+        internal class AlertSystem
+        {
+            public static void HighTemperatureAlert(int temperature)
+            {
+                Console.WriteLine($"ALERTA: Temperatura alta detectada: {temperature}°C");
+            }
+
+            public static void LowTemperatureAlert(int temperature)
+            {
+                Console.WriteLine($"ADVERTENCIA: Temperatura baja detectada: {temperature}°C");
+            }
+        }
+
+        static TemperatureSensor sensor;
+        static void Main(string[] args)
+        {
+            sensor = new TemperatureSensor();
+            sensor.LowTemperatureReached += AlertSystem.LowTemperatureAlert; // Suscribirse al evento de temperatura baja
+            sensor.HighTemperatureReached += AlertSystem.HighTemperatureAlert; // Suscribirse al evento de temperatura alta
+
+            var timer = new System.Timers.Timer(1000);
+            timer.Elapsed += OnTimerElapsed;
+            timer.AutoReset = true;
+            timer.Enabled = true;
+
+            Console.WriteLine("Presiona [Enter] para salir del programa.");
+            Console.ReadLine();
+
+        }
+
+        public static void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            sensor.simulateTemperature();
+        }
+    }
+}
