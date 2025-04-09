@@ -4,6 +4,7 @@ namespace Temperatures
     internal class Program
     {
         public delegate void TemperatureHandler(int temperature); // Delegado para manejar eventos de temperatura
+
         internal class TemperatureSensor
         {
             public event TemperatureHandler HighTemperatureReached; // Evento para temperatura alta
@@ -36,7 +37,8 @@ namespace Temperatures
             }
         }
 
-        static TemperatureSensor sensor;
+        static TemperatureSensor sensor; // Instancia del sensor de temperatura (llamada sensor) que sí es estática
+
         static void Main(string[] args)
         {
             sensor = new TemperatureSensor();
@@ -44,7 +46,7 @@ namespace Temperatures
             sensor.HighTemperatureReached += AlertSystem.HighTemperatureAlert; // Suscribirse al evento de temperatura alta
 
             var timer = new System.Timers.Timer(1000);
-            timer.Elapsed += OnTimerElapsed;
+            timer.Elapsed += OnTimerElapsed; // Suscribimos al timer un evento estático que se encarga de llamar al simulador de temperaturas
             timer.AutoReset = true;
             timer.Enabled = true;
 
@@ -55,7 +57,7 @@ namespace Temperatures
 
         public static void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            sensor.simulateTemperature();
+            sensor.simulateTemperature(); // Llamamos al simulador sin instancia porque sensor es estático
         }
     }
 }
